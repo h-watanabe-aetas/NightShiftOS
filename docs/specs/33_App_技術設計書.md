@@ -2,44 +2,104 @@
 
 ## 1. 技術スタック
 - Flutter 3.x
-- State: Riverpod
-- Local DB: Hive/Isar
-- Beacon: flutter_beacon
-- Push: firebase_messaging + local_notifications
-- Background: workmanager
+- Riverpod + GoRouter
+- Hive + flutter_secure_storage
+- flutter_beacon
+- firebase_messaging + flutter_local_notifications
+- workmanager
 
-## 2. モジュール設計
-| ATC-ID | モジュール | 責務 |
+## 2. ディレクトリ設計
+```text
+lib/
+  core/
+    constants/
+    theme/
+    network/
+    storage/
+  features/
+    auth/
+    beacon/
+    logs/
+    dashboard/
+  app.dart
+  main.dart
+```
+
+## 3. DI設計
+| ATC-ID | Provider | 責務 |
 |---|---|---|
-| ATC-001 | `auth_module` | 認証とプロフィール保持 |
-| ATC-002 | `beacon_module` | Region監視/Ranging |
-| ATC-003 | `movement_module` | ENTER/EXIT生成 |
-| ATC-004 | `sync_module` | オフライン再送 |
-| ATC-005 | `notification_module` | FCM受信/ローカル通知 |
-| ATC-006 | `care_module` | 手動ケア入力 |
-| ATC-007 | `dashboard_module` | 稼働状態UI |
+| ATC-001 | `supabaseProvider` | APIクライアント供給 |
+| ATC-002 | `hiveProvider` | `logs` box供給 |
+| ATC-003 | `authRepositoryProvider` | 認証/プロフィール取得 |
+| ATC-004 | `beaconRepositoryProvider` | Region監視とRanging |
+| ATC-005 | `logRepositoryProvider` | 保存・同期 |
+| ATC-006 | `authStateProvider` | 画面遷移制御 |
+| ATC-007 | `beaconStateProvider` | 現在地状態管理 |
 
-## 3. API連携
-- `POST /v1/app/movements/batch`
-- `POST /v1/app/care-records`
-- `GET /v1/app/bootstrap`
+## 4. 主要モジュール実装
+### 4.1 `BeaconRepository`
+- `initialize()`で権限確認
+- `startMonitoring(uuid, major)`で監視開始
+- enter時に`_startTemporaryRanging()`を起動しminor確定
 
-## 4. 端末権限
-### iOS
+### 4.2 `LogRepository`
+- `saveLog()`は先保存後に送信試行
+- `_trySync()`は未同期ログをバッチ送信
+- 成功時は`isSynced=true`更新または削除
+
+### 4.3 WorkManager
+- `callbackDispatcher`をentry-point登録
+- 15分周期で再送処理
+
+## 5. 画面遷移設計
+### 5.1 ルート
+- `/splash`
+- `/login`
+- `/onboarding`
+- `/dashboard`
+
+### 5.2 リダイレクト
+- 未認証時は`/login`へ
+- 認証済みで`/login`訪問時は`/dashboard`へ
+
+## 6. UI技術設計
+### 6.1 テーマ
+- `ThemeData.dark()`ベース
+- `scaffoldBackgroundColor = 0xFF121212`
+- 高コントラスト配色を採用
+
+### 6.2 Dashboard実装
+- `BeaconState.currentMinor`を監視
+- `AnimatedSwitcher`で部屋表示遷移
+- ボタン`minimumSize`は高さ80を確保
+
+## 7. ネイティブ設定
+### 7.1 iOS
 - `NSLocationAlwaysAndWhenInUseUsageDescription`
-- `UIBackgroundModes`: location/fetch/remote-notification
+- `UIBackgroundModes`:
+  - `location`
+  - `fetch`
+  - `remote-notification`
+- `BGTaskSchedulerPermittedIdentifiers`追加
 
-### Android
-- `BLUETOOTH_SCAN`
-- `ACCESS_BACKGROUND_LOCATION`
-- `FOREGROUND_SERVICE_LOCATION`
+### 7.2 Android
+- 必須パーミッション宣言
+- WorkManager初期化Provider設定
 
-## 5. バッテリー最適化
-- バックグラウンド時はRegion Monitoringのみ
-- Rangingは短時間（enter直後）限定
-- 不要な高頻度ポーリング禁止
+## 8. バッテリー設計
+- バックグラウンドはRegion Monitoring中心
+- RangingはEnter直後の短時間のみ
+- 不要な常時高頻度スキャンを禁止
 
-## 6. テスト設計
-- Unit: queue再送・重複防止・権限分岐
-- Integration: 疑似BeaconでEnter/Exit
-- Device: iOS/Android実機で夜間運用テスト
+## 9. 実装フェーズ
+- Phase 1: Beacon Core（iOS実機）
+- Phase 2: Persistence（機内モード検証）
+- Phase 3: Integration（FCM受信と遷移）
+
+## 10. 技術受入基準
+| TEST-ID | 試験 | 合格条件 |
+|---|---|---|
+| TEST-ATC-001 | iOS背景検知 | didEnterで通知/記録 |
+| TEST-ATC-002 | 再送処理 | オフラインログが復帰後反映 |
+| TEST-ATC-003 | 画面遷移 | 認証状態で正しく分岐 |
+| TEST-ATC-004 | FCM連携 | 通知タップで対象部屋誘導 |
