@@ -1,0 +1,37 @@
+id,title,area,priority,size,phase,dependencies,acceptance_criteria
+NS-PLT-001,共通イベントスキーマ策定,Platform,P0,M,Phase1,-,TC-001準拠JSON Schemaとサンプルを配置
+NS-PLT-002,UUIDv7採番ユーティリティ,Platform,P0,S,Phase1,NS-PLT-001,Edge/App/Cloudで同一形式採番
+NS-PLT-003,トレーサビリティ運用手順化,Platform,P1,S,Phase2,-,PR/F/TC変更時の更新手順を文書化
+NS-EDG-001,UARTレーダードライバ実装,Edge,P0,L,Phase1,NS-PLT-001,EF-001のフレーム解析成功率>=99%
+NS-EDG-002,3状態ステートマシン実装,Edge,P0,L,Phase1,NS-EDG-001,SLEEP/SITTING/OUT_OF_BED遷移テスト合格
+NS-EDG-003,iBeacon常時広告実装,Edge,P0,M,Phase1,-,電源投入5秒以内広告開始と30分欠落なし
+NS-EDG-004,Cloud送信クライアント実装,Edge,P0,M,Phase1,NS-PLT-001,POST /v1/edge/eventsへ冪等送信
+NS-EDG-005,断線時リングバッファ再送,Edge,P0,M,Phase1,NS-EDG-004,60分断線後の再送成功率>=99%
+NS-EDG-006,Provisioning（SoftAP）,Edge,P1,M,Phase2,NS-EDG-003,facility/room/wifi/threshold保存可能
+NS-EDG-007,OTAマネージャ実装,Edge,P1,L,Phase2,NS-EDG-004,署名検証と失敗時ロールバック動作
+NS-EDG-008,WDT/LED運用実装,Edge,P1,S,Phase2,NS-EDG-002,ハング時5秒以内復旧とLED輝度10%上限
+NS-CLD-001,DBスキーマ初版作成,Cloud,P0,M,Phase1,NS-PLT-001,events_raw/alerts/audit_ledger作成
+NS-CLD-002,ingest_edge_fn実装,Cloud,P0,M,Phase1,NS-CLD-001,APIキー検証+保存+ルール起動
+NS-CLD-003,ingest_app_fn実装,Cloud,P0,M,Phase1,NS-CLD-001,JWT検証+バッチ冪等登録
+NS-CLD-004,ルールエンジン実装,Cloud,P0,L,Phase1,NS-CLD-002,SITTING/OUT_OF_BED通知判定動作
+NS-CLD-005,Push Gateway実装,Cloud,P0,M,Phase1,NS-CLD-004,FCM/APNs配信成功応答率>=99%
+NS-CLD-006,監査台帳サービス実装,Cloud,P0,L,Phase1,NS-CLD-002|NS-CLD-003,Observation/Action統合表示可能
+NS-CLD-007,RLS/RBACポリシー実装,Cloud,P0,M,Phase1,NS-CLD-001,他施設越境アクセス0件
+NS-CLD-008,レポート生成（PDF/JSON）,Cloud,P1,L,Phase2,NS-CLD-006,24h分30秒以内で出力
+NS-CLD-009,設定管理API実装,Cloud,P1,M,Phase2,NS-CLD-001,変更履歴config_historyに記録
+NS-APP-001,認証/初期化フロー実装,App,P0,M,Phase1,NS-CLD-001,ログイン後にfacility情報取得
+NS-APP-002,Region Monitoring実装,App,P0,L,Phase1,NS-APP-001,Enter/Exit自動記録
+NS-APP-003,Enter時Ranging補完実装,App,P0,M,Phase1,NS-APP-002,minor推定精度向上
+NS-APP-004,オフラインキュー実装,App,P0,M,Phase1,NS-APP-001|NS-CLD-003,100件再送欠落0
+NS-APP-005,重要通知ハンドラ実装,App,P0,M,Phase1,NS-CLD-005,受信から2秒以内表示（P95）
+NS-APP-006,手動ケア入力UI実装,App,P1,M,Phase2,NS-APP-001,主要ケアを1タップ送信
+NS-APP-007,業務開始/終了トグル実装,App,P1,S,Phase2,NS-APP-002,OFFで監視停止
+NS-APP-008,iOS/Android権限導線実装,App,P0,M,Phase1,NS-APP-001,必須権限許可まで監視開始不可
+NS-WEB-001,リアルタイムタイムライン画面,Web,P1,L,Phase2,NS-CLD-002|NS-CLD-003,居室x時系列を1秒以内更新
+NS-WEB-002,インシデント再構成画面,Web,P1,M,Phase2,NS-CLD-006,1件の事故を時系列復元可能
+NS-WEB-003,施設設定画面,Web,P1,M,Phase2,NS-CLD-009,閾値/通知先更新可能
+NS-QA-001,E2E試験（Edge->Cloud->App）,QA,P0,L,Phase1,NS-EDG-004|NS-CLD-005|NS-APP-005,主要シナリオ全通過
+NS-QA-002,オフライン耐性試験,QA,P0,M,Phase1,NS-EDG-005|NS-APP-004,断線復帰時欠落0
+NS-QA-003,RLS侵入試験,QA,P0,M,Phase1,NS-CLD-007,越境データ参照不可
+NS-QA-004,パフォーマンス計測,QA,P1,M,Phase2,NS-CLD-004,通知遅延P95 3秒以内
+NS-SRE-001,監視ダッシュボード作成,SRE,P1,M,Phase2,NS-CLD-002,API/Push/DBアラート可視化
