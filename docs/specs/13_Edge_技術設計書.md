@@ -30,7 +30,7 @@
 | Bit | 名称 | 意味 |
 |---|---|---|
 | 0 | `BIT_WIFI_CONNECTED` | Wi-Fi接続済み |
-| 1 | `BIT_MQTT_CONNECTED` | MQTT接続済み |
+| 1 | `BIT_UPLINK_READY` | HTTPSまたはMQTTの上位送信経路が利用可能 |
 | 2 | `BIT_SETUP_MODE` | 設定モード中 |
 | 3 | `BIT_RADAR_ALIVE` | レーダーハートビート有 |
 
@@ -38,7 +38,7 @@
 `radarQueue` は `RadarTask -> NetworkTask` の単方向キュー。
 ```cpp
 struct RadarEvent {
-  uint8_t type; // 0:SLEEP 1:SITTING 2:OUT
+  uint8_t type; // 0:SLEEP 1:SITTING 2:OUT_OF_BED
   uint8_t val;
   uint32_t ts;
 };
@@ -51,7 +51,7 @@ struct RadarEvent {
 |---|---|---|
 | ETC-001 | `BeaconTask` | BLE初期化、iBeacon広告、WDT feed |
 | ETC-002 | `RadarTask` | UART受信、パケット検証、状態遷移 |
-| ETC-003 | `NetworkTask` | Wi-Fi維持、MQTT publish |
+| ETC-003 | `NetworkTask` | Wi-Fi維持、HTTPS送信（MVP）/MQTT送信（オプション） |
 | ETC-004 | `LedController` | 状態別LED制御 |
 | ETC-005 | `NVSManager` | 設定のLoad/Save |
 | ETC-006 | `WebPortal` | Setup UI（SoftAP） |
@@ -69,8 +69,9 @@ struct RadarEvent {
 
 ### 5.3 NetworkTask
 - 非ブロッキングでWi-Fi再接続。
-- MQTT未接続なら`reconnectMqtt()`を試行。
-- Queue受信時にJSON生成してpublish。
+- MVPの既定経路は`POST /functions/v1/ingest-sensor`（HTTPS）。
+- 設定でMQTTが有効な場合のみ`reconnectMqtt()`とpublishを試行。
+- Queue受信時にJSON生成し、HTTPS成功時にACK扱いとする。
 
 ### 5.4 LedController
 - 呼吸表現はPWMのsin波相当制御。
@@ -104,8 +105,9 @@ build_flags =
 ## 9. 実装順序
 1. Stage 1: BeaconTask単体（UUID/Major/Minor確認）
 2. Stage 2: RadarTask統合（UART解析 + LED遷移）
-3. Stage 3: Network/NVS統合（送信 + 永続化）
+3. Stage 3: Network/NVS統合（HTTPS送信 + 永続化）
 4. Stage 4: WDT故障注入試験（意図的delayでリセット確認）
+5. Stage 5: MQTTオプション有効化（Phase 2）
 
 ## 10. 技術受入基準
 - Beacon広告はWi-Fi処理に阻害されない。

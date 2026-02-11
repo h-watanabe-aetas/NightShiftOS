@@ -39,13 +39,13 @@
 ## 5. プロダクト要求
 | ID | 要求 | 優先 | 受入条件 |
 |---|---|---|---|
-| ER-001 | 3状態推定 | Must | `SLEEP/SITTING/OUT_OF_BED` を出力 |
+| ER-001 | 3状態推定 | Must | 内部状態 `SLEEP/SITTING/OUT_OF_BED` を判定し、Cloud送信は `SLEEP/SITTING/OUT` に正規化 |
 | ER-002 | Beacon常時送信 | Must | 100ms間隔で広告継続 |
 | ER-003 | Beacon優先制御 | Must | Wi-Fi通信中も広告欠落なし |
 | ER-004 | 端座位判定精度 | Must | 距離40-100cmかつ体動閾値超で検出 |
 | ER-005 | 離床判定 | Must | 5秒無信号で`OUT`遷移 |
 | ER-006 | 非ブロッキング再接続 | Must | Wi-Fi再接続処理で主要タスク停止なし |
-| ER-007 | MQTT/HTTP送信 | Must | Cloud受口へイベント送信可能 |
+| ER-007 | HTTPS送信（MVP）+ MQTT拡張 | Must | MVPは`ingest-sensor`へHTTPS送信、MQTTはオプション実装として切替可能 |
 | ER-008 | 設定の永続化 | Must | `fac_id/room_id/ssid/pass/th_sit`をNVS保持 |
 | ER-009 | SoftAP初期設定 | Should | BOOT押下で設定モード移行 |
 | ER-010 | OTA更新 | Should | Wi-Fi経由で更新可能 |
@@ -62,4 +62,5 @@
 ## 7. 実装フェーズ（Edge）
 - Step 1: Beacon単体検証（Major/Minor視認）
 - Step 2: Radar統合（呼吸連動LED + Beacon同時動作）
-- Step 3: Wi-Fi/MQTT統合（通信中Beacon継続確認）
+- Step 3: Wi-Fi/HTTPS統合（通信中Beacon継続確認）
+- Step 4: MQTTオプション統合（Phase 2）
