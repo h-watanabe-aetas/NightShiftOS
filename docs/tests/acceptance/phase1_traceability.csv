@@ -1,0 +1,31 @@
+issue_id,feature_file,scenario_summary,spec_refs
+NS-PLT-001,docs/tests/acceptance/phase1_platform.feature,Event Contract v1を配布する,docs/specs/03_全体_技術設計書.md|docs/specs/91_実装バックログ.md
+NS-PLT-002,docs/tests/acceptance/phase1_platform.feature,UUID v7採番を全層で統一する,docs/specs/01_全体_プロダクト要求仕様書.md|docs/specs/23_Cloud_技術設計書.md
+NS-PLT-003,docs/tests/acceptance/phase1_platform.feature,OUT_OF_BEDをOUTへ正規化する,docs/specs/00_前提と整合方針.md|docs/specs/12_Edge_機能仕様書.md
+NS-EDG-001,docs/tests/acceptance/phase1_edge.feature,BeaconTaskが100ms広告と5秒以内起動を満たす,docs/specs/11_Edge_プロダクト要求仕様書.md|docs/specs/12_Edge_機能仕様書.md
+NS-EDG-002,docs/tests/acceptance/phase1_edge.feature,Radarフレームを99%以上で抽出する,docs/specs/12_Edge_機能仕様書.md|docs/specs/13_Edge_技術設計書.md
+NS-EDG-003,docs/tests/acceptance/phase1_edge.feature,状態遷移エンジンが仕様どおりに遷移する,docs/specs/12_Edge_機能仕様書.md
+NS-EDG-004,docs/tests/acceptance/phase1_edge.feature,ingest-sensorへHTTPS冪等送信する,docs/specs/12_Edge_機能仕様書.md|docs/specs/22_Cloud_機能仕様書.md
+NS-EDG-005,docs/tests/acceptance/phase1_edge.feature,通信断中でも主要タスクが停止しない,docs/specs/12_Edge_機能仕様書.md|docs/specs/03_全体_技術設計書.md
+NS-EDG-006,docs/tests/acceptance/phase1_edge.feature,Provisioning設定を再起動後も保持する,docs/specs/12_Edge_機能仕様書.md
+NS-EDG-007,docs/tests/acceptance/phase1_edge.feature,ハング時5秒以内に復旧しLEDが5パターン動作する,docs/specs/11_Edge_プロダクト要求仕様書.md|docs/specs/12_Edge_機能仕様書.md
+NS-CLD-001,docs/tests/acceptance/phase1_cloud.feature,MVP必須テーブルを作成する,docs/specs/22_Cloud_機能仕様書.md|docs/specs/23_Cloud_技術設計書.md
+NS-CLD-002,docs/tests/acceptance/phase1_cloud.feature,RLSヘルパーと主要ポリシーが機能する,docs/specs/22_Cloud_機能仕様書.md|docs/specs/23_Cloud_技術設計書.md
+NS-CLD-003,docs/tests/acceptance/phase1_cloud.feature,ingest-sensorが死活更新とイベント保存を行う,docs/specs/22_Cloud_機能仕様書.md|docs/specs/23_Cloud_技術設計書.md
+NS-CLD-004,docs/tests/acceptance/phase1_cloud.feature,ingest-movementがENTER EXIT CAREを正規化保存する,docs/specs/22_Cloud_機能仕様書.md|docs/specs/23_Cloud_技術設計書.md
+NS-CLD-005,docs/tests/acceptance/phase1_cloud.feature,SITTING OUTで通知処理が起動する,docs/specs/22_Cloud_機能仕様書.md|docs/specs/03_全体_技術設計書.md
+NS-CLD-006,docs/tests/acceptance/phase1_cloud.feature,Realtime購読で3テーブルのINSERTが配信される,docs/specs/22_Cloud_機能仕様書.md|docs/specs/23_Cloud_技術設計書.md
+NS-CLD-007,docs/tests/acceptance/phase1_cloud.feature,日次Evidence PDFを生成する,docs/specs/22_Cloud_機能仕様書.md|docs/specs/01_全体_プロダクト要求仕様書.md
+NS-CLD-008,docs/tests/acceptance/phase1_cloud.feature,Staff Adminがログインしてプロフィール参照できる,docs/specs/21_Cloud_プロダクト要求仕様書.md|docs/specs/22_Cloud_機能仕様書.md
+NS-APP-001,docs/tests/acceptance/phase1_app.feature,facility_id取得完了まで監視を開始しない,docs/specs/31_App_プロダクト要求仕様書.md|docs/specs/32_App_機能仕様書.md
+NS-APP-002,docs/tests/acceptance/phase1_app.feature,権限ウィザードで必須導線を提供する,docs/specs/31_App_プロダクト要求仕様書.md|docs/specs/32_App_機能仕様書.md
+NS-APP-003,docs/tests/acceptance/phase1_app.feature,Region MonitoringでEnter Exitイベントを作成する,docs/specs/32_App_機能仕様書.md
+NS-APP-004,docs/tests/acceptance/phase1_app.feature,Enter直後のRangingでRSSI最大minorを反映する,docs/specs/32_App_機能仕様書.md
+NS-APP-005,docs/tests/acceptance/phase1_app.feature,Store-and-Forwardで欠落なく送信する,docs/specs/32_App_機能仕様書.md|docs/specs/02_全体_機能仕様書.md
+NS-APP-006,docs/tests/acceptance/phase1_app.feature,Sync Workerが3トリガーで再送する,docs/specs/32_App_機能仕様書.md
+NS-APP-007,docs/tests/acceptance/phase1_app.feature,Critical通知を2秒以内に表示し音バイブを鳴らす,docs/specs/31_App_プロダクト要求仕様書.md|docs/specs/32_App_機能仕様書.md
+NS-APP-010,docs/tests/acceptance/phase1_app.feature,iOS Androidの必須設定を満たす,docs/specs/32_App_機能仕様書.md|docs/specs/33_App_技術設計書.md
+NS-QA-001,docs/tests/acceptance/phase1_e2e.feature,SITTING OUTから通知までE2E通過,docs/specs/91_実装バックログ.md|docs/specs/02_全体_機能仕様書.md
+NS-QA-002,docs/tests/acceptance/phase1_e2e.feature,Enter Exitが時系列で記録される,docs/specs/91_実装バックログ.md|docs/specs/02_全体_機能仕様書.md
+NS-QA-003,docs/tests/acceptance/phase1_e2e.feature,機内モード往復で欠落0を満たす,docs/specs/91_実装バックログ.md|docs/specs/32_App_機能仕様書.md
+NS-QA-004,docs/tests/acceptance/phase1_e2e.feature,他施設データを参照できない,docs/specs/90_トレーサビリティマトリクス.md|docs/specs/22_Cloud_機能仕様書.md

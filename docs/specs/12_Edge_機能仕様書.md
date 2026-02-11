@@ -15,8 +15,8 @@ FreeRTOSで以下を並行実行する。
 |---|---|---|---|
 | EF-001 | Beacon広告 | UUID固定、Major/Minor可変、100ms送信 | ER-002, ER-003 |
 | EF-002 | Radar UART解析 | Header/Control/Command/Tailでフレーム判定 | ER-001 |
-| EF-003 | 状態遷移判定 | `SLEEP/SITTING/OUT` + デバウンス | ER-001, ER-004, ER-005 |
-| EF-004 | イベント送信 | MQTT topic or HTTPS endpointへ送信 | ER-007 |
+| EF-003 | 状態遷移判定 | `SLEEP/SITTING/OUT_OF_BED` + デバウンス（送信時は`OUT`へ正規化） | ER-001, ER-004, ER-005 |
+| EF-004 | イベント送信 | MVPはHTTPS endpointへ送信、MQTTはオプション | ER-007 |
 | EF-005 | 接続維持 | 非ブロッキングWi-Fi再接続 | ER-006 |
 | EF-006 | NVS設定保持 | `aetas_config`へ設定保存 | ER-008 |
 | EF-007 | SoftAP設定画面 | `GET /` `POST /save` `GET /scan` | ER-009 |
@@ -44,11 +44,11 @@ FreeRTOSで以下を並行実行する。
 - Tail: `0x54 0x43`
 
 ### 4.2 状態定義
-| 状態 | 条件 | LED | 送信 |
+| 内部状態 | 条件 | LED | Cloud送信値 |
 |---|---|---|---|
-| SLEEP | 呼吸受信、低体動 | Breathing | 初回遷移時 |
-| SITTING | 距離40-100cmかつ体動値>th_sit | Fast Blink | 即時 |
-| OUT | 5秒無信号 | Solid On | 即時 |
+| SLEEP | 呼吸受信、低体動 | Breathing | `SLEEP`（初回遷移時） |
+| SITTING | 距離40-100cmかつ体動値>th_sit | Fast Blink | `SITTING`（即時） |
+| OUT_OF_BED | 5秒無信号 | Solid On | `OUT`（即時） |
 
 ### 4.3 デバウンス
 - OUT以外の遷移は1秒継続で確定。
@@ -59,21 +59,35 @@ FreeRTOSで以下を並行実行する。
 - `WiFi.begin`後に接続待ちでブロックしない。
 - 切断時はバックグラウンド再接続。
 
-### 5.2 MQTT
+### 5.2 HTTPS（MVP必須）
+- Endpoint: `POST /functions/v1/ingest-sensor`
+- Header: `Authorization: Bearer <DEVICE_TOKEN>`
+- Payload:
+```json
+{
+  "id": "uuid-v7",
+  "device_id": "uuid",
+  "type": "SITTING",
+  "val": { "dist": 0.8, "energy": 95 },
+  "timestamp": 1709280000
+}
+```
+
+### 5.3 MQTT（オプション）
 - Topic: `aetas/v1/devices/{dev_uuid}/events`
 - Payload:
 ```json
 {
   "id": "uuid-v7",
   "type": "SITTING",
-  "val": 85,
-  "ts": 1709280000
+  "val": { "dist": 0.8, "energy": 95 },
+  "timestamp": 1709280000
 }
 ```
 
-### 5.3 再送方針
+### 5.4 再送方針
 - FSD原典準拠で「古いデータ遅延送信」を避ける。
-- 送信失敗時は即破棄または最新優先保持を採用。
+- 送信失敗時はリングバッファ（最大100件）で最新優先保持し、復帰時に時系列順で再送する。
 
 ## 6. Provisioning仕様（EF-006/007）
 - 起動時にBOOT押下でSetup Mode移行。
@@ -103,3 +117,4 @@ FreeRTOSで以下を並行実行する。
 | TEST-EF-004 | 状態遷移 | SITTING/OUTが条件通り発火 |
 | TEST-EF-005 | WDT復旧 | BeaconTask停止時に再起動 |
 | TEST-EF-006 | Provisioning | 保存後再起動で設定反映 |
+| TEST-EF-007 | HTTPS送信 | `ingest-sensor`へ認証付き送信成功 |

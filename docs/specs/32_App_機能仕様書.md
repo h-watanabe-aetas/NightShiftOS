@@ -39,7 +39,7 @@
 - `didExitRegion`: 最終minorで`EXIT`生成（OS遅延20-30秒想定）
 
 ### 3.3 Ranging（AF-003）
-- 1秒周期で取得（画面ON時）
+- Enter直後の短時間（最大10秒）だけ1秒周期で取得
 - `rssi > -90` のみ採用
 - RSSI降順で先頭minorを現在地表示
 
@@ -47,7 +47,6 @@
 ```dart
 class MovementLog {
   String id;
-  String staffId;
   int minor;
   String action; // ENTER/EXIT/CARE_*
   DateTime timestamp;
@@ -87,7 +86,9 @@ class MovementLog {
 ## 5. API仕様
 - `POST /functions/v1/ingest-movement`
 - Header: `Authorization: Bearer <SUPABASE_JWT>`
-- Body: `movements[]`
+- Body: `movements[]`（`id, minor, action, timestamp, rssi?`）
+- `staff_id` は送信しない（サーバが`auth.uid()`を利用）
+- `CARE_*` はCloud側で`care_records`へ正規化される
 
 ## 6. OS設定仕様
 ### 6.1 iOS
@@ -108,3 +109,4 @@ class MovementLog {
 | TEST-AF-003 | オフライン再送 | 100件欠落なし |
 | TEST-AF-004 | 通知遅延 | 受信から表示2秒以内（P95） |
 | TEST-AF-005 | 手動ケア | 1タップで記録作成 |
+| TEST-AF-006 | API契約整合 | `staff_id`なしpayloadで受理される |

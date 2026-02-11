@@ -40,7 +40,7 @@
 | AR-004 | 自動再送 | Must | 接続回復時に未送信一括POST |
 | AR-005 | 危険通知受信 | Must | high priority通知を表示 |
 | AR-006 | 強通知体験 | Must | マナーモードでも気付ける強度 |
-| AR-007 | 1タップ手動ケア | Must | `TOILET/POSTURE/CHECK`等を即記録 |
+| AR-007 | 1タップ手動ケア | Must | `CARE_TOILET/CARE_POSTURE/CARE_CHECK`等を即記録 |
 | AR-008 | 現在地可視化 | Should | 最寄りminorを大きく表示 |
 | AR-009 | 夜勤UI最適化 | Should | ダークテーマ + 大ボタン80px以上 |
 | AR-010 | iOS審査適合 | Must | 位置情報文言と用途説明を実装 |
@@ -59,7 +59,8 @@
 
 ## 7. API要求
 - Endpoint: `POST /functions/v1/ingest-movement`
-- 主要項目: `id, staff_id, minor, action, timestamp, rssi`
+- 主要項目: `id, minor, action, timestamp, rssi`
+- `staff_id` はpayloadに含めず、サーバ側で`auth.uid()`から確定
 - オフライン再送時は`is_offline_sync=true`
 
 ## 8. 実装ロードマップ

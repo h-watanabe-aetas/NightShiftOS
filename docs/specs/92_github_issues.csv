@@ -3,10 +3,12 @@ NS-PLT-001,Event Contract v1定義,Platform,P0,M,Phase1,-,TC-001準拠のJSON Sc
 NS-PLT-002,UUIDv7採番統一,Platform,P0,S,Phase1,NS-PLT-001,Edge/App/Cloudが同じUUIDv7実装を使用
 NS-PLT-003,用語統一ガード導入,Platform,P0,S,Phase1,NS-PLT-001,OUTとOUT_OF_BEDの変換規約をテスト化
 NS-PLT-004,トレーサビリティ更新フロー整備,Platform,P1,S,Phase2,-,PR/F/TC/TEST変更時の更新手順を文書化
+NS-PLT-005,センサー抽象化レイヤ実装,Platform,P2,L,Phase3,NS-PLT-001,新規レーダー追加時にCloud/App契約変更なしで接続可能
+NS-PLT-006,Evidence Pack v1定義,Platform,P2,M,Phase3,NS-CLD-007,監査証跡/逸脱記録/変更履歴を含む提出用テンプレートを作成
 NS-EDG-001,BeaconTask実装,Edge,P0,M,Phase1,NS-PLT-001,100ms広告と5秒以内起動を満たす
 NS-EDG-002,Radar UARTフレーム解析実装,Edge,P0,L,Phase1,NS-PLT-001,53 59 ... 54 43の有効フレーム抽出率>=99%
 NS-EDG-003,状態遷移エンジン実装,Edge,P0,L,Phase1,NS-EDG-002,SLEEP/SITTING/OUT遷移とデバウンスが仕様通り
-NS-EDG-004,NetworkTask ingest-sensor送信実装,Edge,P0,M,Phase1,NS-EDG-003,POST /functions/v1/ingest-sensorへ冪等送信
+NS-EDG-004,NetworkTask ingest-sensor送信実装,Edge,P0,M,Phase1,NS-EDG-003,HTTPSでPOST /functions/v1/ingest-sensorへ冪等送信
 NS-EDG-005,Wi-Fi非ブロッキング再接続実装,Edge,P0,M,Phase1,NS-EDG-004,通信断中もBeacon/Radarタスク停止なし
 NS-EDG-006,Provisioning SoftAP + NVS実装,Edge,P0,M,Phase1,NS-EDG-001,fac_id/room_id/ssid/pass/th_sit保存と再起動反映
 NS-EDG-007,WDT + LEDパターン実装,Edge,P0,M,Phase1,NS-EDG-003,ハング時5秒以内復旧と5パターンLED動作
@@ -15,11 +17,11 @@ NS-EDG-009,OTA更新実装,Edge,P1,L,Phase2,NS-EDG-004,更新失敗時に旧バ�
 NS-CLD-001,DDL初版作成,Cloud,P0,M,Phase1,NS-PLT-001,facilities/profiles/devices/sensor_events/staff_movements/care_records作成
 NS-CLD-002,RLSヘルパーとポリシー実装,Cloud,P0,M,Phase1,NS-CLD-001,get_my_facility_idと主要ポリシーが動作
 NS-CLD-003,ingest-sensor実装,Cloud,P0,M,Phase1,NS-CLD-001,last_seen/status更新とsensor_events登録が成功
-NS-CLD-004,ingest-movement実装,Cloud,P0,M,Phase1,NS-CLD-001,JWT検証とバッチ登録が成功
+NS-CLD-004,ingest-movement実装,Cloud,P0,M,Phase1,NS-CLD-001,JWT検証とENTER/EXIT/CARE_*の正規化登録が成功
 NS-CLD-005,notify-staff実装,Cloud,P0,M,Phase1,NS-CLD-003,SITTING/OUTでFCM/APNs送信処理が起動
-NS-CLD-006,Realtime publication設定,Cloud,P0,S,Phase1,NS-CLD-001,sensor_eventsとstaff_movementsのINSERT購読可
+NS-CLD-006,Realtime publication設定,Cloud,P0,S,Phase1,NS-CLD-001,sensor_events/staff_movements/care_recordsのINSERT購読可
 NS-CLD-007,Evidence SQLとPDF生成実装,Cloud,P0,L,Phase1,NS-CLD-003|NS-CLD-004,日次レポートをPDFで出力可能
-NS-CLD-008,profiles/auth bootstrap実装,Cloud,P1,M,Phase2,NS-CLD-001,Staff/Adminログインとプロフィール参照可
+NS-CLD-008,profiles/auth bootstrap実装,Cloud,P0,M,Phase1,NS-CLD-001,Staff/Adminログインとプロフィール参照可
 NS-CLD-009,Functionsデプロイ/Secrets整備,Cloud,P1,S,Phase2,NS-CLD-003|NS-CLD-004|NS-CLD-005,FCM_SERVICE_ACCOUNT設定と関数デプロイ完了
 NS-CLD-010,PITRと運用監視初期設定,Cloud,P1,S,Phase2,NS-CLD-001,バックアップと基本アラートが有効
 NS-APP-001,Auth/初期化フロー実装,App,P0,M,Phase1,NS-CLD-008,facility_id取得完了まで監視開始しない

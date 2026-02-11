@@ -46,6 +46,8 @@ lib/
 - `saveLog()`は先保存後に送信試行
 - `_trySync()`は未同期ログをバッチ送信
 - 成功時は`isSynced=true`更新または削除
+- payloadには`staff_id`を含めず、認証JWTで送信者を確定
+- `CARE_*`アクションはCloud側で`care_records`へ正規化される前提
 
 ### 4.3 WorkManager
 - `callbackDispatcher`をentry-point登録

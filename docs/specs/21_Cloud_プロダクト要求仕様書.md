@@ -27,7 +27,7 @@
 | CR-007 | 認証統合 | Must | Staff/AdminをSupabase Authで管理 |
 | CR-008 | デバイス死活監視 | Must | `devices.last_seen/status`更新 |
 | CR-009 | 運用可能なバックアップ | Should | PITR有効化 |
-| CR-010 | 将来拡張可能なデータ構造 | Should | UUID v7前提の時系列設計 |
+| CR-010 | 時系列整列可能なID体系 | Must | Edge/App送信IDがUUID v7で採番され、時系列整列可能 |
 
 ## 5. データ要件
 ### 5.1 マスタ
