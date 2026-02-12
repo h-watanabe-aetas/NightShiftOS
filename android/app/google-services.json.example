@@ -1,0 +1,23 @@
+{
+  "project_info": {
+    "project_number": "1234567890",
+    "project_id": "your-firebase-project-id",
+    "storage_bucket": "your-firebase-project-id.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1234567890:android:replace_me",
+        "android_client_info": {
+          "package_name": "com.aetas.nightshift.nightshiftos_app"
+        }
+      },
+      "api_key": [
+        {
+          "current_key": "replace-with-real-key"
+        }
+      ]
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,1 +1,14 @@
 .DS_Store
+
+# Flutter / Dart
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.idea/
+*.iml
+
+# Firebase secrets
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
